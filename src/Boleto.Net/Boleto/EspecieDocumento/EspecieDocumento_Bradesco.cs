@@ -138,6 +138,7 @@ namespace BoletoNet
                     case EnumEspecieDocumento_Bradesco.Outros:
                         this.Codigo = getCodigoEspecieByEnum(EnumEspecieDocumento_Bradesco.Outros);
                         this.Especie = "Outros";
+                        this.Sigla = "OU"; // Colocar OU a pedido do Bradesco 03/05/2016
                         break;
                     default:
                         this.Codigo = "0";

@@ -673,7 +673,9 @@ namespace BoletoNet
                 .Replace("@LINHADIGITAVEL", Boleto.CodigoBarra.LinhaDigitavel)
                 .Replace("@LOCALPAGAMENTO", Boleto.LocalPagamento)
                 .Replace("@DATAVENCIMENTO", dataVencimento)
-                .Replace("@CEDENTE_BOLETO", !Cedente.MostrarCNPJnoBoleto ? Cedente.Nome : string.Format("{0}&nbsp;&nbsp;&nbsp;CNPJ: {1}", Cedente.Nome, Cedente.CPFCNPJcomMascara))
+                // Passar a função de formatar o cedente para método próprio
+                //.Replace("@CEDENTE_BOLETO", !Cedente.MostrarCNPJnoBoleto ? Cedente.Nome : string.Format("{0}&nbsp;&nbsp;&nbsp;CNPJ: {1}", Cedente.Nome, Cedente.CPFCNPJcomMascara))
+                .Replace("@CEDENTE_BOLETO", FormataCedente())
                 .Replace("@CEDENTE", Cedente.Nome)
                 .Replace("@DATADOCUMENTO", Boleto.DataDocumento.ToString("dd/MM/yyyy"))
                 .Replace("@NUMERODOCUMENTO", Boleto.NumeroDocumento)
@@ -709,6 +711,23 @@ namespace BoletoNet
                 .Replace("@ACEITE", Boleto.Aceite).ToString()
                 .Replace("@ENDERECOCEDENTE", MostrarEnderecoCedente ? enderecoCedente : "");
 
+        }
+
+        /// <summary>
+        /// Formata os dados do Cedente para a exibição do boleto, de acordo com os flags, a fim de exibir ou não CNPJ e/ou endereço
+        /// </summary>
+        /// <returns></returns>
+        private string FormataCedente()
+        {
+            //.Replace("@CEDENTE_BOLETO", !Cedente.MostrarCNPJnoBoleto ? Cedente.Nome : string.Format("{0}&nbsp;&nbsp;&nbsp;CNPJ: {1}", Cedente.Nome, Cedente.CPFCNPJcomMascara))
+            var texto = new StringBuilder();
+            texto.Append(Cedente.Nome);
+            if (Cedente.MostrarCNPJnoBoleto)
+                texto.AppendFormat("&nbsp;&nbsp;&nbsp;CNPJ: {0}", Cedente.CPFCNPJcomMascara);
+            //if (Cedente.MostraEndereconoBoleto)
+            if (MostrarEnderecoCedente)
+                texto.AppendFormat("<br>{0}, {1}, {2}/{3} - CEP: {4}", Cedente.Endereco.End, Cedente.Endereco.Bairro, Cedente.Endereco.Cidade, Cedente.Endereco.UF, Utils.FormataCEP(Cedente.Endereco.CEP));
+            return texto.ToString();
         }
 
         private string FormataDescricaoCarteira()
